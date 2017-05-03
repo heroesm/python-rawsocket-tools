@@ -1,5 +1,7 @@
 # python rawsocket tools
 Fiddle with rawsocket in python3, implementing some commonly used network troubleshooting tools.
+All the scripts need superuser privilege to run.
+The traceroute and mtr scripts are not applicable to Windows, because I do not know and am not interested in how to modify IP header with python raw socket on Windows.
 
 ## ping
 ```
