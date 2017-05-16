@@ -41,9 +41,10 @@ def prepare():
     socket.setdefaulttimeout(10);
 prepare();
 
-def localAddr():
+def localAddr(sRemote=None):
     sock1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM);
-    sock1.connect(('1.1.1.1', 1));
+    sRemote = sRemote or '1.1.1.1';
+    sock1.connect((sRemote, 1));
     sAddr = sock1.getsockname()[0]
     sock1.close();
     return sAddr;
@@ -267,9 +268,9 @@ class Hop():
 class TraceRoute():
     def __init__(self, sTarget, nTtlMin=None, nTtlMax=None, nTimeout=None, nInterval=None, nNumber=None):
         global TTLMIN, TTLMAX, TIMEOUT, INTERVAL, NUMBER;
-        self.sHost = localAddr();
         self.sTarget = sTarget;
         self.sAddr = socket.gethostbyname(sTarget);
+        self.sHost = localAddr(self.sAddr);
         self.nTtlMin = nTtlMin or TTLMIN or 1;
         self.nTtlMax = nTtlMax or TTLMAX or 30;
         assert self.nTtlMin < self.nTtlMax;

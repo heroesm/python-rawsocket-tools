@@ -35,9 +35,10 @@ def prepare():
     socket.setdefaulttimeout(10);
 prepare();
 
-def localAddr():
+def localAddr(sRemote=None):
     sock1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM);
-    sock1.connect(('1.1.1.1', 1));
+    sRemote = sRemote or '1.1.1.1';
+    sock1.connect((sRemote, 1));
     sAddr = sock1.getsockname()[0]
     sock1.close();
     return sAddr;

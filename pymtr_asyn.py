@@ -40,9 +40,10 @@ def prepare():
     socket.setdefaulttimeout(10);
 prepare();
 
-def localAddr():
+def localAddr(sRemote=None):
     sock1 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM);
-    sock1.connect(('1.1.1.1', 1));
+    sRemote = sRemote or '1.1.1.1';
+    sock1.connect((sRemote, 1));
     sAddr = sock1.getsockname()[0]
     sock1.close();
     return sAddr;
@@ -267,9 +268,9 @@ class Mtr():
     def __init__(self, sTarget, nTtlMin=None, nTtlMax=None, nInterval=None, isVerbose=None, nCycle=0, isReport=None, loop=None):
         global TTLMIN, TTLMAX, INTERVAL, VERBOSE, CYCLE, REPORT;
         self.loop = loop or asyncio.get_event_loop();
-        self.sHost = localAddr();
         self.sTarget = sTarget;
         self.sAddr = socket.gethostbyname(sTarget);
+        self.sHost = localAddr(self.sAddr);
         self.nTtlMin = int(nTtlMin or TTLMIN or 1);
         self.nTtlMax = int(nTtlMax or TTLMAX or 30);
         assert self.nTtlMin < self.nTtlMax;
@@ -292,7 +293,7 @@ class Mtr():
         self.aOutput = [];
         self.mCache = {};
     def findAndPurge(self, index, sAttr):
-        # search IP packet and auxiliary information within the most current 4 hops, older data shall be purged
+        # search IP packet and auxiliary information within some most current hops, older data shall be purged
         # hops range from 1 to len(aHops), differing from index of aHops by 1;
         nEnd = self.nTtlCursor - 1;
         nStart = nEnd - len(self.aHops) + 1
